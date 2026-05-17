@@ -36,30 +36,36 @@ const gameQuestions = [
     { q: "Circle, Square, Triangle are...", o: ["Colors", "Shapes", "Sizes"], a: 1, ex: "Itu adalah bentuk-bentuk (Shapes)." }
 ];
 
+// --- DATA SOAL TOEIC (10 SOAL INCOMPLETE SENTENCES) ---
+const toeicQuestions = [
+    { q: "The marketing director decided to ___ the product launch until next quarter.", o: ["postpone", "postponed", "postponing"], a: 0, ex: "Setelah modal/infinitive 'to', gunakan kata kerja dasar (Verb 1)." },
+    { q: "Ms. Tanaka received an award for her ___ contributions to the company.", o: ["exception", "exceptional", "exceptionally"], a: 1, ex: "Butuh kata sifat (adjective) 'exceptional' untuk menerangkan kata benda 'contributions'." },
+    { q: "Please review the updated safety guidelines ___ before operating the machinery.", o: ["careful", "carefully", "carefulness"], a: 1, ex: "Butuh kata keterangan (adverb) 'carefully' untuk menerangkan kata kerja 'review'." },
+    { q: "The new software system operates much more ___ than the old one.", o: ["efficient", "efficiently", "efficiency"], a: 1, ex: "Menerangkan cara kerja ('operates'), maka gunakan adverb 'efficiently'." },
+    { q: "Mr. Gomez is the executive ___ is responsible for overseas expansion.", o: ["who", "which", "whose"], a: 0, ex: "Relative pronoun 'who' digunakan untuk menggantikan subjek orang (Mr. Gomez)." },
+    { q: "All employees are required to attend the seminar ___ they have a scheduling conflict.", o: ["unless", "although", "despite"], a: 0, ex: "'Unless' berarti 'kecuali jika', cocok untuk kondisi pengecualian ini." },
+    { q: "The renovation project was completed ___ schedule thanks to the team's hard work.", o: ["ahead of", "forward", "in front of"], a: 0, ex: "'Ahead of schedule' adalah idiom yang berarti 'lebih cepat dari jadwal'." },
+    { q: "The company's profits have grown ___ since the restructuring last year.", o: ["significance", "significant", "significantly"], a: 2, ex: "Gunakan adverb 'significantly' untuk menerangkan peningkatan kata kerja 'have grown'." },
+    { q: "He suggested ___ a temporary consultant to help with the heavy workload.", o: ["hire", "hiring", "to hire"], a: 1, ex: "Kata kerja 'suggest' diikuti oleh Gerund (Verb+ing), yaitu 'hiring'." },
+    { q: "Free high-speed internet access is ___ to all guests staying at the hotel.", o: ["available", "availability", "availably"], a: 0, ex: "Butuh kata sifat (adjective) 'available' setelah to be 'is'." }
+];
+
+
 function goToMenu() {
-    // Ambil nilai dari input nama dan password
     const user = document.getElementById('username').value.trim();
     const pass = document.getElementById('password').value.trim();
-    
-    // Password yang kita tentukan
     const correctPassword = "tugas123"; 
 
-    // Validasi 1: Pastikan semua kolom diisi
     if(user === "" || pass === "") {
         alert("Waduh, Nama dan Password jangan dikosongin ya, bro!");
         return;
     }
 
-    // Validasi 2: Cek apakah password benar
     if(pass === correctPassword) {
-        // Jika benar, sembunyikan halaman login, tampilkan menu
         document.getElementById('login-page').classList.add('hidden');
         document.getElementById('menu-page').classList.remove('hidden');
-        
-        // Sapa user dengan namanya
         document.getElementById('welcome-msg').innerText = `Selamat Datang, ${user}!`;
     } else {
-        // Jika salah
         alert("Password salah! Cek lagi ya, bro.");
     }
 }
@@ -74,7 +80,15 @@ function startApp(mode) {
 }
 
 function loadContent() {
-    const questions = (currentGameMode === 'Quiz') ? quizQuestions : gameQuestions;
+    // MODIFIKASI: Logika penentuan bank soal berdasarkan 3 mode
+    let questions;
+    if (currentGameMode === 'Quiz') {
+        questions = quizQuestions;
+    } else if (currentGameMode === 'Games') {
+        questions = gameQuestions;
+    } else if (currentGameMode === 'TOEIC') {
+        questions = toeicQuestions;
+    }
     
     if (currentStep >= questions.length || hp <= 0) {
         showResult();
