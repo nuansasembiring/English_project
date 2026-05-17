@@ -42,7 +42,14 @@
             <p>Uji kemampuan Present Tense kamu di sini.</p>
         </div>
 
-        <!-- Kartu 2: Games -->
+        <!-- Kartu 2: TOEIC -->
+        <div class="mode-card" onclick="startApp('TOEIC')">
+            <div class="card-icon">📚</div>
+            <h3>Mulai TOEIC</h3>
+            <p>Latih kemampuan bahasa Inggris kamu dengan soal TOEIC.</p>
+        </div>
+
+        <!-- Kartu 3: Games -->
         <div class="mode-card" onclick="startApp('Games')">
             <div class="card-icon">🎮</div>
             <h3>Main Games</h3>
@@ -56,6 +63,7 @@
         <div class="stats">
             <span class="hp">❤️ Nyawa: <span id="hp-val">5</span></span>
             <span class="exp">✨ EXP: <span id="exp-val">0</span></span>
+            <span class="score">⭐ Poin: <span id="score-val">0</span></span>
         </div>
         
         <h3 id="question-text">Question here?</h3>
@@ -67,6 +75,7 @@
             <button onclick="nextQuestion()" style="margin-top: 10px;">Lanjut</button>
         </div>
     </div>
+    
 
     <!-- SECTION 4: GAME OVER -->
     <div id="result-page" class="container hidden">
@@ -74,7 +83,6 @@
         <p id="final-stats"></p>
         <button onclick="location.reload()">Main Lagi</button>
     </div>
-
     <!-- Memanggil file JavaScript -->
     <script src="script.js"></script>
 </body>
