@@ -52,23 +52,42 @@ const toeicQuestions = [
 
 
 function goToMenu() {
-    const user = document.getElementById('username').value.trim();
-    const pass = document.getElementById('password').value.trim();
-    const correctPassword = "tugas123"; 
+    // 1. Ambil input nama dari user
+    const usernameInput = document.getElementById('username').value.trim();
+    const passwordInput = document.getElementById('password').value;
 
-    if(user === "" || pass === "") {
-        alert("Waduh, Nama dan Password jangan dikosongin ya, bro!");
+    // Validasi simpel (opsional, sesuaikan dengan logic biasamu)
+    if (usernameInput === "" || passwordInput === "") {
+        alert("Nama dan Password tidak boleh kosong!");
+        return;
+    }
+    
+    if (passwordInput !== "tugas123") {
+        alert("Password salah, bro! Cek hint di bawah.");
         return;
     }
 
-    if(pass === correctPassword) {
-        document.getElementById('login-page').classList.add('hidden');
+    // 2. Set nama user ke teks animasi dan pesan selamat datang di menu
+    document.getElementById('anim-username').innerText = usernameInput;
+    document.getElementById('welcome-msg').innerText = `Selamat Datang, ${usernameInput}!`;
+
+    // 3. Sembunyikan Halaman Login
+    document.getElementById('login-page').classList.add('hidden');
+
+    // 4. Tampilkan Layar Animasi Selamat Datang
+    const animPage = document.getElementById('welcome-animation-page');
+    animPage.classList.remove('hidden');
+
+    // 5. Set timer: Setelah 2.5 detik, jalankan fungsi transisi ke Menu
+    setTimeout(() => {
+        // Sembunyikan layar animasi
+        animPage.classList.add('hidden');
+        
+        // Tampilkan Halaman Menu Utama
         document.getElementById('menu-page').classList.remove('hidden');
-        document.getElementById('welcome-msg').innerText = `Selamat Datang, ${user}!`;
-    } else {
-        alert("Password salah! Cek lagi ya, bro.");
-    }
+    }, 2500); // 2500 milidetik = 2.5 detik
 }
+
 
 function startApp(mode) {
     currentGameMode = mode;
