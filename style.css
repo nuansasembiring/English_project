@@ -165,3 +165,64 @@ button:hover {
         flex-direction: column;
     }
 }
+/* --- ANIMASI SELAMAT DATANG --- */
+
+/* Wrapper utama animasi */
+.welcome-box {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Animasi Teks Judul */
+.fade-in-text {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeInOut 2s ease-in-out forwards;
+}
+
+/* Animasi Subteks */
+.fade-in-subtext {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 25px;
+    opacity: 0;
+    animation: fadeInOut 2s ease-in-out 0.3s forwards; /* Delay 0.3 detik */
+}
+
+/* Loading Spinner Bulat */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid var(--primary, #4A90E2); /* Sesuaikan var primary-mu */
+    border-radius: 50%;
+    margin: 0 auto;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Keyframes untuk Efek Muncul & Menghilang */
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    30% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Keyframes untuk Spinner Berputar */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
