@@ -2,8 +2,8 @@
     /* Palet warna yang lebih fresh */
     --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --card-bg: #ffffff;
-    --primary: #6c5ce7;
-    --secondary: #a29bfe;
+    --primary: #08070e;
+    --secondary: #17152a;
     --accent: #00cec9;
     --danger: #ff7675;
     --success: #55efc4;
@@ -11,8 +11,9 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif; /* Pakai font yang lebih modern */
-    background: var(--bg-gradient);
+    font-family: 'Poppins', sans-serif;
+    /* Mengubah background gradient menjadi warna hitam pekat/solid */
+    background: #2e2b2ba1; 
     height: 100vh;
     margin: 0;
     display: flex;
@@ -69,7 +70,7 @@ button {
 }
 
 button:hover {
-    background: #5b4bc4;
+    background: #110f1b;
     transform: scale(1.02);
 }
 
@@ -165,36 +166,65 @@ button:hover {
         flex-direction: column;
     }
 }
-/* --- ANIMASI SELAMAT DATANG --- */
+/* --- ANIMASI SELAMAT DATANG (DARK STYLE) --- */
 
-/* Wrapper utama animasi */
-.welcome-box {
-    text-align: center;
-    padding: 20px;
+/* Membuat kontainer animasi menjadi gelap kontras */
+.dark-welcome {
+    background: rgba(9, 9, 255, 0.67) !important; /* Warna dasar gelap transparan */
+    backdrop-filter: blur(8px); /* Efek blur kaca modern */
+    border: 1px solid rgba(250, 250, 250, 0.1);
+    color: #ffffff !important; /* Semua teks di dalamnya jadi putih */
 }
 
-/* Animasi Teks Judul */
+#anim-username {
+    color: var(--accent); /* Warna nama user pakai warna cerah accent-mu */
+    font-weight: bold;
+}
+
+/* Animasi memudar untuk teks */
 .fade-in-text {
-    font-size: 2rem;
-    margin-bottom: 10px;
+    font-size: 1.8rem;
+    margin: 5px 0;
     opacity: 0;
-    animation: fadeInOut 2s ease-in-out forwards;
+    animation: fadeInOut 2.2s ease-in-out forwards;
 }
 
-/* Animasi Subteks */
 .fade-in-subtext {
-    font-size: 1rem;
-    color: #666;
+    font-size: 0.95rem;
+    color: #ffffff; /* Abu-abu terang agar nyaman dibaca di latar gelap */
     margin-bottom: 25px;
     opacity: 0;
-    animation: fadeInOut 2s ease-in-out 0.3s forwards; /* Delay 0.3 detik */
+    animation: fadeInOut 2.2s ease-in-out 0.2s forwards;
 }
 
+/* Spinner loading dengan penyesuaian warna gelap */
+.spinner {
+    width: 35px;
+    height: 35px;
+    border: 4px solid rgb(255, 255, 255);
+    border-top: 4px solid var(--accent); /* Menggunakan warna cyan accent agar kontras */
+    border-radius: 50%;
+    margin: 0 auto;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Keyframes gabungan muncul lalu menghilang halus */
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(8px); }
+    15% { opacity: 1; transform: translateY(0); }
+    85% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 /* Loading Spinner Bulat */
 .spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid rgba(0, 0, 0, 0.1);
+    border: 4px solid rgb(250, 250, 250);
     border-top: 4px solid var(--primary, #4A90E2); /* Sesuaikan var primary-mu */
     border-radius: 50%;
     margin: 0 auto;
@@ -225,4 +255,71 @@ button:hover {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+/* Tombol Keluar / Exit */
+.exit-btn {
+    width: auto !important; /* Biar nggak lebar penuh */
+    padding: 5px 12px !important;
+    background: #dfe6e9 !important;
+    color: #636e72 !important;
+    font-size: 0.8rem !important;
+    box-shadow: none !important;
+    border: 1px solid #b2bec3 !important;
+}
+.exit-btn:hover {
+    background: var(--danger) !important;
+    color: white !important;
+    border-color: var(--danger) !important;
+}
+/* Container untuk menampung panah dan stats dalam satu baris */
+.header-game {
+    display: flex;
+    justify-content: space-between; /* Ini kunci agar tombol di kiri & stats di kanan */
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.back-arrow {
+    background: #f1f2f6 !important;
+    border: 1px solid #ddd !important;
+    border-radius: 50% !important;
+    width: 35px !important;
+    height: 35px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.back-arrow:hover {
+    background: #ff7675 !important; /* Warna merah saat hover */
+    color: white !important;
+}
+
+.back-arrow:hover {
+    background: var(--danger) !important;
+    color: white !important;
+    transform: scale(1.1);
+}
+
+/* Sedikit penyesuaian stats agar tidak bertabrakan */
+.header-game .stats {
+    margin-bottom: 0;
+    flex-grow: 1;
+    margin-left: 15px;
+}
+.header-game {
+    display: flex;
+    justify-content: space-between; /* Ini supaya panah di kiri, stats di kanan */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.stats {
+    display: flex;
+    gap: 15px; /* Kasih jarak antar icon Nyawa, EXP, dan Poin */
+    justify-content: flex-end;
 }
