@@ -3,118 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Learning - Minimalist</title>
+    <title>English Learning - Platform</title>
     <!-- Memanggil file CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- SECTION 1: LOGIN -->
-<div id="login-page" class="container">
-    <h2>Welcome Back!</h2>
-    <p>Silakan login untuk mulai belajar</p>
+    <div class="app-container">
+        <!-- SIDEBAR UTAMA -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>English<span>Practice</span></h1>
+                <p>ENGLISH LEARNING QUEST</p>
+            </div>
+
+            <div class="user-profile">
+                <div class="avatar" id="side-avatar">U</div>
+                <div class="user-info">
+                    <h3 id="side-username">User</h3> 
+                    <p>Rank: Pilot</p>
+                </div>
+            </div>
+
+            <div class="xp-display">
+                TOTAL ACCUMULATED: <span id="side-exp">0</span> XP
+            </div>
+
+            <button class="logout-btn" onclick="location.reload()">🛑 Keluar Game</button>
+        </aside>
+
+        <!-- KONTEN UTAMA (Dinamis diatur via JS) -->
+        <main class="main-content">
+
+            <!-- SECTION 1: LOGIN -->
+            <div id="login-page" class="container">
+                <h2>Welcome Back!</h2>
+                <p>Silakan login untuk mulai belajar</p>
+                
+                <div style="text-align: left; margin-bottom: 15px;">
+                    <label style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">NAMA USER</label>
+                    <input type="text" id="username" placeholder="Masukkan nama kamu...">
+                </div>
+
+                <div style="text-align: left; margin-bottom: 20px;">
+                    <label style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">PASSWORD</label>
+                    <input type="password" id="password" placeholder="Masukkan password...">
+                </div>
+
+                <button onclick="goToMenu()">Masuk Sekarang</button>
+                <p style="font-size: 0.7rem; color: #999; margin-top: 15px;">Hint: Passwordnya adalah <b>tugas123</b></p>
+            </div>
+
+            <!-- SECTION 2: ANIMASI SELAMAT DATANG -->
+            <div id="welcome-animation-page" class="container hidden" style="background: none; box-shadow: none;">
+                <div class="welcome-box">
+                    <h1 class="fade-in-text">Halo, <span id="anim-username" style="color: var(--primary);">User</span>! 👋</h1>
+                    <p class="fade-in-subtext">Mempersiapkan materi belajar kamu...</p>
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: MENU DASHBOARD & LEADERBOARD -->
+            <div id="menu-page" class="menu-grid hidden">
+                <div class="menu-selection">
+                    <h2>Welcome Back!</h2>
+                    <p>Choose Your Learning Mode:</p>
+                    
+                    <div class="card-container">
+                        <!-- Mode 1: Quiz -->
+                        <div class="mode-card" onclick="startApp('Quiz')">
+                            <div class="card-icon">📝</div>
+                            <h3>Start Quiz</h3>
+                            <p>Test your Present Tense skills here.</p>
+                        </div>
+
+                        <!-- Mode 2: TOEIC -->
+                        <div class="mode-card" onclick="startApp('TOEIC')">
+                            <div class="card-icon">📚</div>
+                            <h3>Start TOEIC</h3>
+                            <p>Practice your English with TOEIC preparation questions.</p>
+                        </div>
+
+                        <!-- Mode 3: Games -->
+                        <div class="mode-card" onclick="startApp('Games')">
+                            <div class="card-icon">🎮</div>
+                            <h3>Play Games</h3>
+                            <p>Guess the word categories in a fun and relaxed way.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Leaderboard -->
+                <div class="leaderboard-sidebar">
+                    <h3>🏆 Top 5 Global Rank</h3>
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-list">
+                            <!-- Data leaderboard diisi via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 4: AREA GAME / PERTANYAAN -->
+            <div id="game-page" class="container hidden">
+                <div class="header-game">
+                    <button onclick="exitToMenu()" class="back-arrow">&#8592;</button>
+                    <div class="stats">
+                        <span class="hp">❤️ <span id="hp-val">5</span></span>
+                        <span class="exp">✨ <span id="exp-val">0</span></span>
+                        <span class="score">⭐ <span id="score-val">0</span></span>
+                    </div>
+                </div>
+                
+                <h3 id="question-text">Question here?</h3>
+                <div id="options-container"></div>
+
+                <!-- Area Feedback Jawaban -->
+                <div id="feedback-area" class="hidden">
+                    <div class="explanation" id="explanation-text"></div>
+                    <button onclick="nextQuestion()" style="margin-top: 10px;">Lanjut</button>
+                </div>
+            </div>
+
+            <!-- SECTION 5: HASIL SESI / GAME OVER -->
+            <div id="result-page" class="container hidden">
+                <div style="font-size: 4rem; margin-bottom: 10px;">🏆</div>
+                <h2 style="color: var(--accent);">Hasil Sesi</h2>
+                
+                <div id="final-stats" style="margin-bottom: 20px;"></div>
+                
+                <button onclick="backToMenuFromResults()" style="margin-bottom: 10px; background: var(--accent);">Coba Lagi / Pilih Mode Lain</button>
+                <button onclick="location.reload()" class="option-btn">Log Out</button>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="main-content">
+    <!-- Halaman-halaman kamu yang lain ada di sini (Login, Menu, Game) -->
+    <div id="login-page" class="container">Nuansa Uli Agustin Sembiring</div>
+    <div id="menu-page" class="menu-grid hidden">Selamat Datang di Menu Utama</div>
     
-    <div style="text-align: left; margin-bottom: 15px;">
-        <label style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">NAMA USER</label>
-        <input type="text" id="username" placeholder="Masukkan nama kamu...">
+    <!-- TARUH KODE INI DI PALING BAWAH DI DALAM MAIN-CONTENT -->
+    <main class="main-content">
+    <div class="web-creator">
+        Created by <span>Nuansa Uli Agustin Sembiring</span>
     </div>
-
-    <div style="text-align: left; margin-bottom: 20px;">
-        <label style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">PASSWORD</label>
-        <input type="password" id="password" placeholder="Masukkan password...">
-    </div>
-
-    <button onclick="goToMenu()">Masuk Sekarang</button>
-    <p style="font-size: 0.7rem; color: #999; margin-top: 15px;">Hint: Passwordnya adalah <b>tugas123</b></p>
-</div>
-
-<!-- SECTION ANIMASI SELAMAT DATANG -->
-<div id="welcome-animation-page" class="container hidden" style="background: none; box-shadow: none;">
-    <div class="welcome-box">
-        <h1 class="fade-in-text">Halo, <span id="anim-username" style="color: var(--primary);">User</span>! 👋</h1>
-        <p class="fade-in-subtext">Mempersiapkan materi belajar kamu...</p>
-        <div class="spinner"></div>
-    </div>
-</div>
-
-    <!-- SECTION 2: MENU -->
-<div id="menu-page" class="container hidden" style="max-width: 600px;">
-    <h2 id="welcome-msg">Selamat Datang!</h2>
-    <p>Pilih Mode Pembelajaran:</p>
-    
-    <div class="card-container">
-        <!-- Kartu 1: Quiz -->
-        <div class="mode-card" onclick="startApp('Quiz')">
-            <div class="card-icon">📝</div>
-            <h3>Mulai Quiz</h3>
-            <p>Uji kemampuan Present Tense kamu di sini.</p>
-        </div>
-
-        <!-- Kartu 2: TOEIC -->
-        <div class="mode-card" onclick="startApp('TOEIC')">
-            <div class="card-icon">📚</div>
-            <h3>Mulai TOEIC</h3>
-            <p>Latih kemampuan bahasa Inggris kamu dengan soal TOEIC.</p>
-        </div>
-
-        <!-- Kartu 3: Games -->
-        <div class="mode-card" onclick="startApp('Games')">
-            <div class="card-icon">🎮</div>
-            <h3>Main Games</h3>
-            <p>Tebak kategori kata yang seru dan santai.</p>
-        </div>
-    </div>
-</div>
-
-    <!-- SECTION 3: GAMEPLAY -->
-    <div id="game-page" class="container hidden">
-        <div class="stats">
-            <span class="hp">❤️ Nyawa: <span id="hp-val">5</span></span>
-            <span class="exp">✨ EXP: <span id="exp-val">0</span></span>
-            <span class="score">⭐ Poin: <span id="score-val">0</span></span>
-        </div>
-        
-        <h3 id="question-text">Question here?</h3>
-        
-        <div id="options-container"></div>
-
-        <div id="feedback-area" class="hidden">
-            <div class="explanation" id="explanation-text"></div>
-            <button onclick="nextQuestion()" style="margin-top: 10px;">Lanjut</button>
-        </div>
-    </div>
-    <button onclick="exitToMenu()" class="back-arrow">&#8592;</button>
-    
-
-    <!-- SECTION 4: GAME OVER -->
-  <div id="game-page" class="container hidden">
-    <div class="header-game">
-        <button onclick="exitToMenu()" class="back-arrow">&#8592;</button>
-
-        <div class="stats">
-            <span class="hp">❤️ <span id="hp-val">5</span></span>
-            <span class="exp">✨ <span id="exp-val">0</span></span>
-            <span class="score">⭐ <span id="score-val">0</span></span>
-        </div>
-    </div>
-    
-    <h3 id="question-text">Question here?</h3>
-    <div id="options-container"></div>
-
-    <div id="feedback-area" class="hidden">
-        <div class="explanation" id="explanation-text"></div>
-        <button onclick="nextQuestion()" style="margin-top: 10px;">Lanjut</button>
-    </div>
-</div>
-<div id="result-page" class="container hidden">
-    <div style="font-size: 4rem; margin-bottom: 10px;">🏆</div>
-    <h2>Hasil Sesi</h2>
-    <p id="final-stats"></p>
-    
-    <button onclick="backToMenuFromResults()" style="margin-bottom: 10px; background: var(--accent);">Coba Lagi / Pilih Mode Lain</button>
-    
-    <button onclick="location.reload()" class="option-btn">Log Out</button>
-</div>
     <!-- Memanggil file JavaScript -->
     <script src="script.js"></script>
 </body>
