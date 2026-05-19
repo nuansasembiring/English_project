@@ -1,11 +1,12 @@
+// --- STATE GLOBAL UTAMA ---
 let hp = 5;
 let exp = 0;
 let score = 0;
 let currentStep = 0;
 let currentGameMode = "";
+let currentUsername = "User"; 
 
-// --- DATA SOAL (15 Quiz, 15 TOEIC, 15 Games) ---
-
+// --- DATA BANK SOAL ---
 const quizQuestions = [
     { q: "She ___ to school every day.", o: ["Go", "Goes", "Going"], a: 1, ex: "Subjek 'She' menggunakan Verb+s/es." },
     { q: "I ___ not like coffee.", o: ["Do", "Does", "Am"], a: 0, ex: "Subjek 'I' menggunakan 'Do'." },
@@ -62,24 +63,54 @@ const gameQuestions = [
 
 // --- FUNGSI LOGIN ---
 function goToMenu() {
-    const user = document.getElementById('username').value.trim();
-    const pass = document.getElementById('password').value.trim();
-    const correctPassword = "tugas123"; 
+    const usernameInput = document.getElementById('username').value;
+    const passwordInput = document.getElementById('password').value;
+    const sidebar = document.querySelector('.sidebar');
 
-    if(user && pass === correctPassword) {
+    if (passwordInput === "tugas123") {
+        if (usernameInput.trim() === "") {
+            alert("Masukkan nama kamu dulu ya!");
+            return;
+        }
+
+        // Set nama user global
+        currentUsername = usernameInput.trim();
+
+        // Singkronisasi info user ke UI
+        document.getElementById('anim-username').innerText = currentUsername;
+        document.getElementById('side-username').innerText = currentUsername;
+        document.getElementById('side-avatar').innerText = currentUsername.charAt(0).toUpperCase();
+
+        // Hilangkan halaman Login
         document.getElementById('login-page').classList.add('hidden');
-        document.getElementById('menu-page').classList.remove('hidden');
-        document.getElementById('welcome-msg').innerText = `Selamat Datang, ${user}!`;
+
+        // Nyalakan Sidebar & Animasi transisi masuk
+        sidebar.classList.add('active'); 
+        document.getElementById('welcome-animation-page').classList.remove('hidden');
+
+        // Muat tabel skor global agar langsung siap dilihat
+        displayLeaderboard();
+
+        // Jeda waktu 3 detik agar animasi loading terasa dramatis
+        setTimeout(() => {
+            document.getElementById('welcome-animation-page').classList.add('hidden');
+            document.getElementById('menu-page').classList.remove('hidden');
+        }, 3000);
+
     } else {
-        alert("Nama harus diisi & Password: tugas123");
+        alert("Password salah! Hint: tugas123");
     }
 }
 
-// --- FUNGSI NAVIGASI ---
+// --- FUNGSI PILIHAN GAME ---
 function startApp(mode) {
     currentGameMode = mode;
-    hp = 5; exp = 0; score = 0; currentStep = 0;
-    updateStats();
+    hp = 5; 
+    exp = 0; 
+    score = 0; 
+    currentStep = 0;
+    
+    updateStats(); 
     
     document.getElementById('menu-page').classList.add('hidden');
     document.getElementById('game-page').classList.remove('hidden');
@@ -87,37 +118,29 @@ function startApp(mode) {
 }
 
 function exitToMenu() {
-    // Beri peringatan agar tidak sengaja terpencet
     if (confirm("Yakin mau keluar ke menu utama? Progres kamu akan hilang, bro.")) {
-        
-        // 1. Sembunyikan semua halaman permainan & hasil
         document.getElementById('game-page').classList.add('hidden');
         document.getElementById('result-page').classList.add('hidden');
-        
-        // 2. Munculkan halaman menu kartu
         document.getElementById('menu-page').classList.remove('hidden');
         
-        // 3. RESET TOTAL status permainan (Kunci agar tidak error saat masuk lagi)
         currentStep = 0;
         hp = 5;
         exp = 0;
         score = 0;
         
-        // 4. Update tampilan angka di layar (biar balik jadi 5 nyawa)
         updateStats();
-        
-        // Opsional: scroll ke atas
         window.scrollTo(0, 0);
     }
 }
 
-// --- LOGIKA UTAMA (TAMPILKAN SOAL) ---
+// --- GAME LOGIC ENGINE ---
 function loadContent() {
     let questions;
     if (currentGameMode === 'Quiz') questions = quizQuestions;
     else if (currentGameMode === 'TOEIC') questions = toeicQuestions;
     else questions = gameQuestions;
 
+    // Proteksi jika soal habis atau nyawa menyentuh angka 0
     if (currentStep >= questions.length || hp <= 0) {
         showResult();
         return;
@@ -134,30 +157,28 @@ function loadContent() {
         const btn = document.createElement('button');
         btn.innerText = opt;
         btn.className = 'option-btn';
-        // Pastikan fungsi checkAnswer menerima data yang benar
         btn.onclick = () => checkAnswer(index, data);
         optionsDiv.appendChild(btn);
     });
 }
 
-// --- CEK JAWABAN ---
 function checkAnswer(index, data) {
     const feedbackArea = document.getElementById('feedback-area');
     const optionsButtons = document.querySelectorAll('.option-btn');
-
-    // Matikan semua tombol biar gak bisa klik dua kali
+    
+    // Kunci tombol agar tidak bisa diklik berulang kali
     optionsButtons.forEach(b => b.disabled = true);
 
-    if(index === data.a) {
+    if (index === data.a) {
         exp += 50;
-        score += 10;
+        score += 10; 
         document.getElementById('explanation-text').innerText = "✅ Benar! " + data.ex;
     } else {
         hp -= 1;
         document.getElementById('explanation-text').innerText = "❌ Salah! " + data.ex;
     }
 
-    updateStats();
+    updateStats(); 
     feedbackArea.classList.remove('hidden');
 }
 
@@ -166,65 +187,92 @@ function nextQuestion() {
     loadContent();
 }
 
+// --- UPDATE TAMPILAN STATS REAL-TIME ---
 function updateStats() {
     document.getElementById('hp-val').innerText = hp;
     document.getElementById('exp-val').innerText = exp;
-    // Pastikan ID ini ada di HTML kamu
-    if(document.getElementById('score-val')) {
-        document.getElementById('score-val').innerText = score;
+    document.getElementById('side-exp').innerText = exp; // Berhasil singkron ke sidebar
+    
+    const scoreVal = document.getElementById('score-val');
+    if (scoreVal) {
+        scoreVal.innerText = score;
     }
 }
 
+// --- SISTEM LOCALSTORAGE LEADERBOARD ---
+function saveScore(username, finalScore) {
+    let leaderboard = JSON.parse(localStorage.getItem('english_leaderboard')) || [];
+    
+    leaderboard.push({ name: username, score: finalScore, date: new Date().toLocaleDateString() });
+    leaderboard.sort((a, b) => b.score - a.score);
+    
+    // Simpan maksimal 10 data teratas
+    leaderboard = leaderboard.slice(0, 10);
+    
+    localStorage.setItem('english_leaderboard', JSON.stringify(leaderboard));
+}
+
+function displayLeaderboard() {
+    const listContainer = document.getElementById('leaderboard-list');
+    if (!listContainer) return; 
+    
+    let leaderboard = JSON.parse(localStorage.getItem('english_leaderboard')) || [];
+    listContainer.innerHTML = ""; 
+
+    if (leaderboard.length === 0) {
+        listContainer.innerHTML = `<tr><td colspan="3" style="text-align:center;">Belum ada rekor.</td></tr>`;
+        return;
+    }
+
+    // Ambil Top 5 untuk ditampilkan di Widget Sidebar Menu
+    leaderboard.slice(0, 5).forEach((data, index) => {
+        const row = document.createElement('tr');
+        if (index === 0) row.style.color = "#f1c40f"; // Efek khusus Rank 1 emas
+
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${data.name}</td>
+            <td>${data.score}</td>
+        `;
+        listContainer.appendChild(row);
+    });
+}
+
+// --- SCREEN AKHIR (RESULTS) & LOGOUT ---
 function showResult() {
-    // Sembunyikan halaman gameplay
     document.getElementById('game-page').classList.add('hidden');
-    // Tampilkan halaman hasil
     document.getElementById('result-page').classList.remove('hidden');
     
-    let msg = "";
-    let icon = "";
+    saveScore(currentUsername, score);
 
-    if (hp <= 0) {
-        // Jika kalah (Nyawa Habis)
-        icon = "❌";
-        msg = "Yah, nyawa kamu habis! Jangan menyerah, pelajari lagi penjelasannya dan coba lagi ya.";
-    } else {
-        // Jika berhasil sampai soal terakhir
-        icon = "🏆";
-        msg = "Luar biasa! Kamu berhasil menyelesaikan semua tantangan dengan baik.";
-    }
-    
-    // Tampilkan pesan dan statistik akhir
-    document.getElementById('result-page').querySelector('div').innerText = icon;
-    document.getElementById('final-stats').innerHTML = `
-        ${msg}<br><br>
-        <div style="background: #f1f2f6; padding: 15px; border-radius: 10px;">
-            <b>⭐ Skor Akhir: ${score}</b><br>
-            <b>✨ Total EXP: ${exp}</b>
+    let pesan = hp <= 0 ? "Yah, nyawa kamu habis! 💀" : "Luar biasa! Sesi selesai! 🏆";
+    let warnaSkor = hp <= 0 ? "#ff7675" : "#55efc4";
+
+    const statsContainer = document.getElementById('final-stats');
+    statsContainer.innerHTML = `
+        <p style="font-weight: bold; color: ${warnaSkor}; font-size:1.2rem;">${pesan}</p>
+        <div style="background: #222; padding: 15px; border-radius: 12px; border: 1px solid #444; margin-top:10px;">
+            <p style="margin: 5px 0;">⭐ Poin Terkumpul: <b>${score}</b></p>
+            <p style="margin: 5px 0;">✨ Total EXP: <b>${exp}</b></p>
         </div>
     `;
+
+    displayLeaderboard();
 }
+
 function backToMenuFromResults() {
-    // 1. Sembunyikan halaman hasil (Result Page)
-    const resultPage = document.getElementById('result-page');
-    if (resultPage) {
-        resultPage.classList.add('hidden');
-    }
+    document.getElementById('result-page').classList.add('hidden');
+    document.getElementById('menu-page').classList.remove('hidden');
     
-    // 2. Tampilkan kembali halaman menu (Menu Page)
-    const menuPage = document.getElementById('menu-page');
-    if (menuPage) {
-        menuPage.classList.remove('hidden');
-    }
-    
-    // 3. Reset semua variabel ke kondisi awal
     hp = 5;
     exp = 0;
     score = 0;
     currentStep = 0;
     
-    // 4. Update tampilan angka nyawa, exp, poin di layar game
     updateStats();
-    
-    console.log("Berhasil balik ke menu, bro!"); // Buat ngecek di console (F12)
+}
+
+function logout() {
+    document.querySelector('.sidebar').classList.remove('active');
+    location.reload();
 }
